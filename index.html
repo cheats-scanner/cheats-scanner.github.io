@@ -139,10 +139,9 @@
     </div>
   </footer>
 
-  <!-- Modal с капчей -->
-<div id="captchaModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
+<!-- Modal с капчей -->
+<div id="captchaModal" class="modal" onclick="closeModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
     <h2>Подтвердите, что вы не робот</h2>
     <div class="g-recaptcha" data-sitekey="6LfXEsorAAAAAE0C11JWZPhbc_PZNEpZifyrwIsw"></div>
     <button class="confirm-btn" onclick="confirmCaptcha()">Подтвердить</button>
@@ -157,6 +156,7 @@
   display: none; align-items: center; justify-content: center;
   z-index: 10000;
   animation: fadeIn 0.3s ease forwards;
+  cursor: pointer;
 }
 @keyframes fadeIn { from {opacity:0} to {opacity:1} }
 
@@ -169,11 +169,11 @@
   border: 1px solid rgba(255,255,255,0.1);
   display: flex; flex-direction: column; align-items: center;
   animation: slideDown 0.4s ease forwards;
+  cursor: default;
 }
 @keyframes slideDown { from {transform: translateY(-30px); opacity:0} to {transform: translateY(0); opacity:1} }
 
 .modal h2 { margin-top:0; font-size:20px; color: var(--accent); }
-.close { position: absolute; top: 20px; right: 30px; font-size: 22px; color:#fff; cursor:pointer; }
 
 .confirm-btn {
   margin-top:16px;
@@ -200,9 +200,12 @@ function openModal(link){
   document.getElementById("captchaModal").style.display = "flex";
 }
 
-function closeModal(){
-  document.getElementById("captchaModal").style.display = "none";
-  grecaptcha.reset();
+function closeModal(event){
+  // Закрываем окно, только если клик был по фону, а не по контенту
+  if(event.target.id === 'captchaModal'){
+    document.getElementById("captchaModal").style.display = "none";
+    grecaptcha.reset();
+  }
 }
 
 function confirmCaptcha(){
@@ -211,7 +214,7 @@ function confirmCaptcha(){
     showToast("Пройдите проверку reCAPTCHA!");
     return;
   }
-  closeModal();
+  closeModal({target: document.getElementById("captchaModal")});
   const a = document.createElement("a");
   a.href = downloadLink;
   a.setAttribute("download", "");
