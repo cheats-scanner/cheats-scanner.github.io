@@ -25,10 +25,6 @@
       background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
       padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
     }
-    .highlight{
-      margin-top:16px;padding:16px;border-radius:12px;border:1px solid rgba(110,231,183,0.3);
-      background:rgba(110,231,183,0.05);color:#e6fffa;font-size:15px;line-height:1.6;
-    }
     main{width:100%;max-width:1100px;padding:20px 24px 80px;}
     .downloads{margin-top:42px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;}
     .card{
@@ -42,9 +38,7 @@
       background:linear-gradient(90deg,#10b981,#06b6d4);color:#032;box-shadow:0 8px 24px rgba(6,78,59,0.18);
       border:none;cursor:pointer;transition:transform 0.3s ease;
     }
-    .download-btn:hover{
-      transform:scale(1.07) rotate(-2deg);
-    }
+    .download-btn:hover{transform:scale(1.07) rotate(-2deg);}
     footer{width:100%;max-width:1100px;padding:20px 24px 40px;color:rgba(255,255,255,0.85);font-size:14px;text-align:center}
     .donate-container{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:12px}
     .donate-btn{
@@ -73,11 +67,26 @@
       transition: all 0.5s ease;
       z-index: 9999;
     }
-    #toast.show {
-      bottom: 40px;
-      opacity: 1;
+    #toast.show {bottom: 40px;opacity: 1;}
+
+    /* --- Modal --- */
+    .modal {
+      position: fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);
+      display:none;align-items:center;justify-content:center;z-index:10000;
     }
+    .modal-content {
+      background:var(--bg1);padding:24px;border-radius:14px;max-width:400px;width:100%;text-align:center;
+      border:1px solid rgba(255,255,255,0.1);
+    }
+    .modal h2{margin-top:0;font-size:20px;color:var(--accent)}
+    .close{position:absolute;top:20px;right:30px;font-size:22px;color:#fff;cursor:pointer}
+    .confirm-btn{
+      margin-top:16px;padding:10px 18px;border:none;border-radius:10px;cursor:pointer;
+      font-weight:600;background:linear-gradient(90deg,#10b981,#06b6d4);color:#032;transition:transform 0.3s ease;
+    }
+    .confirm-btn:hover{transform:scale(1.05)}
   </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
   <header>
@@ -85,7 +94,7 @@
     <p class="subtitle">
       Набор утилит для повышенной безопасности и проверки файлов. <strong>RegisterScanner</strong> — инструмент для анализа и сканирования регистрационных данных, поиска подозрительных шаблонов и автоматической генерации отчётов; <strong>FilesChecker</strong> — быстрый проверщик целостности файлов и поиска модификаций. Оба инструмента — простые в использовании и совместимы с игровыми серверами. <em>Tools for minecraft.</em>
       <br><br>
-      <span class="highlight">Данные инструменты были специально разработаны для поиска читов на Minecraft, программы также были разработаны с учетом опросов модераторов а также игроков различных игровых серверов, в данный список входят опросы серверов: <strong>ReallyWorld</strong>, <strong>Funtime</strong>, <strong>HolyWorld</strong>.</span>
+      Данные инструменты были специально разработаны для поиска читов на Minecraft, программы также были разработаны с учетом опросов модераторов а также игроков различных игровых серверов, в данный список входят опросы серверов: <strong>ReallyWorld</strong>, <strong>Funtime</strong>, <strong>HolyWorld</strong>.
       <br><br>
       Чтобы скачать понравившуюся утилиту, пролистайте страницу ниже и нажмите кнопку "Download" рядом с нужным инструментом.
     </p>
@@ -99,7 +108,7 @@
         <p style="color:var(--muted);font-size:14px;line-height:1.5">
           RegisterScanner сканирует регистрационные файлы и базы на предмет мошеннических аккаунтов, подозрительных паттернов логинов и конфигураций. Поддерживает экспорт отчётов в CSV и JSON, удобен для администраторов серверов. Tools for minecraft.
         </p>
-        <a class="download-btn" href="/RegisterScanner.zip" download>Download</a>
+        <button class="download-btn" onclick="openModal('/RegisterScanner.zip')">Download</button>
       </div>
       <div class="card">
         <h3>FilesChecker</h3>
@@ -107,7 +116,7 @@
         <p style="color:var(--muted);font-size:14px;line-height:1.5">
           FilesChecker проверяет целостность файлов, вычисляет хэши и сравнивает их с эталонами, помогает быстро находить изменённые или добавленные файлы в игровых сборках и на серверах. Поддерживает пакетную проверку и логирование. Tools for minecraft.
         </p>
-        <a class="download-btn" href="/FilesChecker.zip" download>Download</a>
+        <button class="download-btn" onclick="openModal('/FilesChecker.zip')">Download</button>
       </div>
     </div>
   </main>
@@ -130,9 +139,48 @@
     </div>
   </footer>
 
+  <!-- Modal с капчей -->
+  <div id="captchaModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Подтвердите, что вы не робот</h2>
+      <div class="g-recaptcha" data-sitekey="6LfXEsorAAAAAE0C11JWZPhbc_PZNEpZifyrwIsw"></div>
+      <button class="confirm-btn" onclick="confirmCaptcha()">Подтвердить</button>
+    </div>
+  </div>
+
   <div id="toast"></div>
 
   <script>
+    let downloadLink = null;
+
+    function openModal(link){
+      downloadLink = link;
+      document.getElementById("captchaModal").style.display = "flex";
+    }
+
+    function closeModal(){
+      document.getElementById("captchaModal").style.display = "none";
+      grecaptcha.reset();
+    }
+
+    function confirmCaptcha(){
+      const response = grecaptcha.getResponse();
+      if(response.length === 0){
+        showToast("Пройдите проверку reCAPTCHA!");
+        return;
+      }
+      // Успех: начинаем скачивание
+      closeModal();
+      const a = document.createElement("a");
+      a.href = downloadLink;
+      a.setAttribute("download", "");
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast("Скачивание началось!");
+    }
+
     function copyText(text){
       navigator.clipboard.writeText(text).then(()=>{
         showToast("Адрес скопирован: " + text);
@@ -140,6 +188,7 @@
         console.error("Ошибка копирования: ", err);
       });
     }
+
     function showToast(message){
       const toast = document.getElementById("toast");
       toast.textContent = message;
