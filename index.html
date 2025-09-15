@@ -46,7 +46,16 @@
       border:none;cursor:pointer
     }
     .download-btn:active{transform:translateY(1px)}
-    footer{width:100%;max-width:1100px;padding:20px 24px 40px;color:rgba(255,255,255,0.5);font-size:13px;text-align:center}
+    footer{width:100%;max-width:1100px;padding:20px 24px 40px;color:rgba(255,255,255,0.85);font-size:14px;text-align:center}
+    .donate-container{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:12px}
+    .donate-btn{
+      display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;
+      background:var(--card);color:#fff;font-weight:600;font-size:14px;cursor:pointer;
+      border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(6px);
+      transition:background 0.2s ease;
+    }
+    .donate-btn:hover{background:rgba(255,255,255,0.12)}
+    .donate-btn img{width:18px;height:18px}
     @media (max-width:520px){h1{font-size:34px}}
   </style>
 </head>
@@ -83,7 +92,31 @@
   </main>
 
   <footer>
-    Разместите в корне репозитория файлы <code>RegisterScanner.zip</code> и <code>FilesChecker.zip</code>, а также этот <code>index.html</code> — и ваши кнопки будут ссылаться на них напрямую.
+    Пожертвовать деньги на продолжение разработки этих инструментов -
+    <div class="donate-container">
+      <button class="donate-btn" onclick="copyText('bc1qkc7457qpyw3uzc2n7jd0xq49yfen6aetqvdwn8')">
+        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC"> BTC
+      </button>
+      <button class="donate-btn" onclick="copyText('0x5d97c1dF33031191d4ad2C3b9C9db4b5B69b81D4')">
+        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH"> ETH (ERC20)
+      </button>
+      <button class="donate-btn" onclick="copyText('TD5RNAparhwRrq2ppde5E534yf8mz9zD27')">
+        <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT"> USDT (TRC20)
+      </button>
+      <button class="donate-btn" onclick="copyText('UQDq0BlYM2V7a3IZje_gTpsiWhMcCxqQOsRuyt2-tuyww2BG')">
+        <img src="https://cryptologos.cc/logos/toncoin-ton-logo.png" alt="TON"> TON
+      </button>
+    </div>
   </footer>
+
+  <script>
+    function copyText(text){
+      navigator.clipboard.writeText(text).then(()=>{
+        alert("Адрес скопирован: " + text);
+      }).catch(err=>{
+        console.error("Ошибка копирования: ", err);
+      });
+    }
+  </script>
 </body>
 </html>
