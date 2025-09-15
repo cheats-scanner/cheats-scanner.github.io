@@ -140,61 +140,91 @@
   </footer>
 
   <!-- Modal с капчей -->
-  <div id="captchaModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <h2>Подтвердите, что вы не робот</h2>
-      <div class="g-recaptcha" data-sitekey="6LfXEsorAAAAAE0C11JWZPhbc_PZNEpZifyrwIsw"></div>
-      <button class="confirm-btn" onclick="confirmCaptcha()">Подтвердить</button>
-    </div>
+<div id="captchaModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Подтвердите, что вы не робот</h2>
+    <div class="g-recaptcha" data-sitekey="6LfXEsorAAAAAE0C11JWZPhbc_PZNEpZifyrwIsw"></div>
+    <button class="confirm-btn" onclick="confirmCaptcha()">Подтвердить</button>
   </div>
+</div>
 
-  <div id="toast"></div>
+<style>
+.modal {
+  position: fixed;
+  top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease forwards;
+}
+@keyframes fadeIn { from {opacity:0} to {opacity:1} }
 
-  <script>
-    let downloadLink = null;
+.modal-content {
+  background: var(--bg1);
+  padding: 24px;
+  border-radius: 14px;
+  max-width: 360px; width: 100%;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; flex-direction: column; align-items: center;
+  animation: slideDown 0.4s ease forwards;
+}
+@keyframes slideDown { from {transform: translateY(-30px); opacity:0} to {transform: translateY(0); opacity:1} }
 
-    function openModal(link){
-      downloadLink = link;
-      document.getElementById("captchaModal").style.display = "flex";
-    }
+.modal h2 { margin-top:0; font-size:20px; color: var(--accent); }
+.close { position: absolute; top: 20px; right: 30px; font-size: 22px; color:#fff; cursor:pointer; }
 
-    function closeModal(){
-      document.getElementById("captchaModal").style.display = "none";
-      grecaptcha.reset();
-    }
+.confirm-btn {
+  margin-top:16px;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  width:100%;
+  background: linear-gradient(90deg,#10b981,#06b6d4);
+  color:#032;
+  transition: transform 0.3s ease;
+}
+.confirm-btn:hover { transform: scale(1.05); }
 
-    function confirmCaptcha(){
-      const response = grecaptcha.getResponse();
-      if(response.length === 0){
-        showToast("Пройдите проверку reCAPTCHA!");
-        return;
-      }
-      // Успех: начинаем скачивание
-      closeModal();
-      const a = document.createElement("a");
-      a.href = downloadLink;
-      a.setAttribute("download", "");
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      showToast("Скачивание началось!");
-    }
+.g-recaptcha { margin:16px 0; }
+</style>
 
-    function copyText(text){
-      navigator.clipboard.writeText(text).then(()=>{
-        showToast("Адрес скопирован: " + text);
-      }).catch(err=>{
-        console.error("Ошибка копирования: ", err);
-      });
-    }
+<script>
+let downloadLink = null;
 
-    function showToast(message){
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(()=>{ toast.classList.remove("show"); }, 3000);
-    }
-  </script>
-</body>
-</html>
+function openModal(link){
+  downloadLink = link;
+  document.getElementById("captchaModal").style.display = "flex";
+}
+
+function closeModal(){
+  document.getElementById("captchaModal").style.display = "none";
+  grecaptcha.reset();
+}
+
+function confirmCaptcha(){
+  const response = grecaptcha.getResponse();
+  if(response.length === 0){
+    showToast("Пройдите проверку reCAPTCHA!");
+    return;
+  }
+  closeModal();
+  const a = document.createElement("a");
+  a.href = downloadLink;
+  a.setAttribute("download", "");
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  showToast("Скачивание началось!");
+}
+
+function showToast(message){
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(()=>{ toast.classList.remove("show"); }, 3000);
+}
+</script>
