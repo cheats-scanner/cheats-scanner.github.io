@@ -16,27 +16,20 @@
     body{
       margin:0;min-height:100vh;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background:linear-gradient(180deg,var(--bg1),var(--bg2));
-      color: #fff; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-      display:flex;flex-direction:column;align-items:center;
+      color: #fff; display:flex;flex-direction:column;align-items:center;
     }
-    header{
-      width:100%;max-width:1100px;padding:64px 24px 48px;text-align:center;
-    }
-    h1{
-      margin:0;font-size:48px;letter-spacing:-0.02em;color:var(--accent);text-shadow:0 6px 30px rgba(0,0,0,0.6);
-    }
+    header{width:100%;max-width:1100px;padding:64px 24px 48px;text-align:center;}
+    h1{margin:0;font-size:48px;letter-spacing:-0.02em;color:var(--accent);text-shadow:0 6px 30px rgba(0,0,0,0.6);}
     .subtitle{
       margin-top:18px;color:var(--muted);font-size:16px;line-height:1.6;max-width:920px;margin-left:auto;margin-right:auto;
       background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
       padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
     }
     main{width:100%;max-width:1100px;padding:20px 24px 80px;}
-    .downloads{
-      margin-top:42px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;align-items:start;
-    }
+    .downloads{margin-top:42px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;}
     .card{
       background:var(--card);padding:22px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);backdrop-filter: blur(6px);
-      display:flex;flex-direction:column;align-items:flex-start;gap:12px;
+      display:flex;flex-direction:column;gap:12px;
     }
     .card h3{margin:0;font-size:18px;color:#fff}
     .password{font-size:13px;color:var(--muted)}
@@ -45,7 +38,6 @@
       background:linear-gradient(90deg,#10b981,#06b6d4);color:#032;box-shadow:0 8px 24px rgba(6,78,59,0.18);
       border:none;cursor:pointer
     }
-    .download-btn:active{transform:translateY(1px)}
     footer{width:100%;max-width:1100px;padding:20px 24px 40px;color:rgba(255,255,255,0.85);font-size:14px;text-align:center}
     .donate-container{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:12px}
     .donate-btn{
@@ -57,6 +49,27 @@
     .donate-btn:hover{background:rgba(255,255,255,0.12)}
     .donate-btn img{width:18px;height:18px}
     @media (max-width:520px){h1{font-size:34px}}
+
+    /* --- Toast уведомление --- */
+    #toast {
+      position: fixed;
+      bottom: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      opacity: 0;
+      transition: all 0.5s ease;
+      z-index: 9999;
+    }
+    #toast.show {
+      bottom: 40px;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -70,52 +83,59 @@
   </header>
 
   <main>
-    <section aria-labelledby="download-heading">
-      <h2 id="download-heading" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Скачать программы</h2>
-
-      <div class="downloads">
-        <div class="card" role="article" aria-label="RegisterScanner">
-          <h3>RegisterScanner</h3>
-          <div class="password">Password: <strong>Scanner</strong></div>
-          <p style="margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.5">RegisterScanner сканирует регистрационные файлы и базы на предмет мошеннических аккаунтов, подозрительных паттернов логинов и конфигураций. Поддерживает экспорт отчётов в CSV и JSON, удобен для администраторов серверов. Tools for minecraft.</p>
-          <a class="download-btn" href="/RegisterScanner.zip" download="RegisterScanner.zip" rel="noopener">Download</a>
-        </div>
-
-        <div class="card" role="article" aria-label="FilesChecker">
-          <h3>FilesChecker</h3>
-          <div class="password">Password: <strong>Checker</strong></div>
-          <p style="margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.5">FilesChecker проверяет целостность файлов, вычисляет хэши и сравнивает их с эталонами, помогает быстро находить изменённые или добавленные файлы в игровых сборках и на серверах. Поддерживает пакетную проверку и логирование. Tools for minecraft.</p>
-          <a class="download-btn" href="/FilesChecker.zip" download="FilesChecker.zip" rel="noopener">Download</a>
-        </div>
+    <div class="downloads">
+      <div class="card">
+        <h3>RegisterScanner</h3>
+        <div class="password">Password: <strong>Scanner</strong></div>
+        <p style="color:var(--muted);font-size:14px;line-height:1.5">
+          RegisterScanner сканирует регистрационные файлы и базы на предмет мошеннических аккаунтов, подозрительных паттернов логинов и конфигураций. Поддерживает экспорт отчётов в CSV и JSON, удобен для администраторов серверов. Tools for minecraft.
+        </p>
+        <a class="download-btn" href="/RegisterScanner.zip" download>Download</a>
       </div>
-    </section>
+      <div class="card">
+        <h3>FilesChecker</h3>
+        <div class="password">Password: <strong>Checker</strong></div>
+        <p style="color:var(--muted);font-size:14px;line-height:1.5">
+          FilesChecker проверяет целостность файлов, вычисляет хэши и сравнивает их с эталонами, помогает быстро находить изменённые или добавленные файлы в игровых сборках и на серверах. Поддерживает пакетную проверку и логирование. Tools for minecraft.
+        </p>
+        <a class="download-btn" href="/FilesChecker.zip" download>Download</a>
+      </div>
+    </div>
   </main>
 
   <footer>
     Пожертвовать деньги на продолжение разработки этих инструментов -
     <div class="donate-container">
       <button class="donate-btn" onclick="copyText('bc1qkc7457qpyw3uzc2n7jd0xq49yfen6aetqvdwn8')">
-        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC"> BTC
+        <img src="btc.png" alt="BTC"> BTC
       </button>
       <button class="donate-btn" onclick="copyText('0x5d97c1dF33031191d4ad2C3b9C9db4b5B69b81D4')">
-        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH"> ETH (ERC20)
+        <img src="eth.png" alt="ETH"> ETH (ERC20)
       </button>
       <button class="donate-btn" onclick="copyText('TD5RNAparhwRrq2ppde5E534yf8mz9zD27')">
-        <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT"> USDT (TRC20)
+        <img src="usdt.png" alt="USDT"> USDT (TRC20)
       </button>
       <button class="donate-btn" onclick="copyText('UQDq0BlYM2V7a3IZje_gTpsiWhMcCxqQOsRuyt2-tuyww2BG')">
-        <img src="https://cryptologos.cc/logos/toncoin-ton-logo.png" alt="TON"> TON
+        <img src="ton.png" alt="TON"> TON
       </button>
     </div>
   </footer>
 
+  <div id="toast"></div>
+
   <script>
     function copyText(text){
       navigator.clipboard.writeText(text).then(()=>{
-        alert("Адрес скопирован: " + text);
+        showToast("Адрес скопирован: " + text);
       }).catch(err=>{
         console.error("Ошибка копирования: ", err);
       });
+    }
+    function showToast(message){
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(()=>{ toast.classList.remove("show"); }, 3000);
     }
   </script>
 </body>
